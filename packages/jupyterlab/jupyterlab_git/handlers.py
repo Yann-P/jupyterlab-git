@@ -276,6 +276,7 @@ class GitDetailedLogHandler(GitHandler):
         """
         data = self.get_json_body()
         selected_hash = data["selected_hash"]
+        reject_option_injection(selected_hash, "Commit id")
         result = await self.git.detailed_log(selected_hash, self.url2localpath(path))
 
         if result["code"] != 0:
@@ -297,6 +298,8 @@ class GitDiffHandler(GitHandler):
         data = self.get_json_body()
 
         if data:
+            reject_option_injection(data.get("previous"), "Previous ref")
+            reject_option_injection(data.get("current"), "Current ref")
             my_output = await self.git.diff(
                 self.url2localpath(path),
                 data.get("previous"),
@@ -727,10 +730,12 @@ class GitInitHandler(GitHandler):
 class GitChangedFilesHandler(GitHandler):
     @tornado.web.authenticated
     async def post(self, path: str = ""):
+        data = self.get_json_body()
+        reject_option_injection(data.get("single_commit"), "Commit id")
+        reject_option_injection(data.get("base"), "Base ref")
+        reject_option_injection(data.get("remote"), "Remote ref")
         try:
-            body = await self.git.changed_files(
-                self.url2localpath(path), **self.get_json_body()
-            )
+            body = await self.git.changed_files(self.url2localpath(path), **data)
         except Exception as e:
             self.handle_git_error(e)
             return
@@ -777,6 +782,7 @@ class GitContentHandler(GitHandler):
         data = self.get_json_body()
         filename = data["filename"]
         reference = data["reference"]
+        reject_option_injection(reference.get("git"), "Ref")
         local_path, cm = self.url2localpath(path, with_contents_manager=True)
 
         try:

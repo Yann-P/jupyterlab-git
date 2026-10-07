@@ -967,6 +967,13 @@ async def test_content_getcontent_deleted_file(mock_execute, jp_fetch, jp_root_d
         ("merge", {"branch": "--evil"}),
         ("push", {"remote": "--evil"}),
         ("rebase", {"branch": "--evil"}),
+        ("diff", {"previous": "--evil"}),
+        ("diff", {"previous": "HEAD", "current": "--evil"}),
+        ("changed_files", {"single_commit": "--evil"}),
+        ("changed_files", {"base": "--evil", "remote": "HEAD"}),
+        ("changed_files", {"base": "HEAD", "remote": "--evil"}),
+        ("detailed_log", {"selected_hash": "--evil"}),
+        ("content", {"filename": "f", "reference": {"git": "--evil"}}),
         ("tag", {"tag_id": "--evil", "commit_id": "HEAD"}),
         ("tag", {"tag_id": "v1", "commit_id": "--evil"}),
         (
