@@ -344,6 +344,9 @@ class Git:
                 "message": [string] # Error response
             }
         """
+        reject_option_injection(single_commit, "Commit id")
+        reject_option_injection(base, "Base ref")
+        reject_option_injection(remote, "Remote ref")
         if single_commit:
             cmd = ["git", "diff", single_commit, "--name-only", "-z"]
         elif base and remote:
@@ -724,6 +727,7 @@ class Git:
         Execute git log -m --cc -1 --numstat --oneline -z command (used to get
         insertions & deletions per file) & return the result.
         """
+        reject_option_injection(selected_hash, "Commit id")
         cmd = [
             "git",
             "log",
@@ -806,6 +810,8 @@ class Git:
         """
         Execute git diff command & return the result.
         """
+        reject_option_injection(previous, "Previous ref")
+        reject_option_injection(current, "Current ref")
         cmd = ["git", "diff", "--numstat", "-z"]
 
         if previous:
@@ -1683,6 +1689,7 @@ class Git:
 
         Return the file content
         """
+        reject_option_injection(ref, "Ref")
         command = ["git", "show"]
 
         if filename is None:
@@ -1800,6 +1807,7 @@ class Git:
         Raises:
             HTTPError: if git command failed
         """
+        reject_option_injection(ref, "Ref")
         if ref == "INDEX":
             command = [
                 "git",
