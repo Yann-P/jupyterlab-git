@@ -49,10 +49,7 @@ def reject_option_injection(value, name):
     without losing valid input.
     """
     if value is not None and value.startswith("-"):
-        raise tornado.web.HTTPError(
-            status_code=400,
-            reason=f"{name} cannot start with a hyphen",
-        )
+        raise tornado.web.HTTPError(400, f"{name} cannot start with a hyphen")
 
 
 class SSHHandler(APIHandler):

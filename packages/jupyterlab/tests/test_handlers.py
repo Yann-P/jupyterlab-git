@@ -1001,5 +1001,5 @@ async def test_option_like_ref_is_rejected(
             method="POST",
         )
 
-    assert_http_error(e, 400)
+    assert_http_error(e, 400, "cannot start with a hyphen")
     mock_execute.assert_not_called()
